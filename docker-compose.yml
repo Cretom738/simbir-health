@@ -1,0 +1,191 @@
+﻿services:
+  redis:
+    image: redis:latest
+    restart: always
+    command: --requirepass CmYNV8WMHwuuWZrTxxX33HQ6W2mYky
+    volumes:
+      - redis-volume:/data
+    networks:
+      - simbir-health-network
+ 
+  rabbitmq:
+    image: rabbitmq:management
+    restart: always
+    ports:
+      - "15672:15672"
+    volumes:
+      - rabbitmq-volume:/var/lib/rabbitmq/
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=EQ4uKahY99AdC1Vp5qmwRGBKha1kUU
+    networks:
+      - simbir-health-network
+
+  elasticsearch:
+    image: elasticsearch:8.15.3
+    container_name: "elasticsearch"
+    restart: always
+    volumes:
+      - elasticsearch-volume:/usr/share/elasticsearch/data
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ports:
+      - 9200:9200
+    networks:
+      - simbir-health-network
+
+  kibana:
+    image: kibana:8.15.3
+    container_name: "kibana"
+    restart: always
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch 
+    networks:
+      - simbir-health-network
+
+  account-db:
+    image: postgres:latest
+    restart: always
+    volumes:
+      - account-db-volume:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=simbir-health-account
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=axGuZc26E41x8GeWdAPhZf4CFJ3N2N
+    networks: 
+      - account-network
+      
+  account-service:
+    container_name: "account-service"
+    build:
+      context: ./src/Services/Account
+      dockerfile: WebApi/Dockerfile
+    ports:
+      - "8081:8080"
+    depends_on:
+      - account-db
+      - redis 
+      - rabbitmq 
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - simbir-health-network
+      - account-network
+
+  hospital-db:
+    image: postgres:latest
+    restart: always
+    volumes:
+      - hospital-db-volume:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=simbir-health-hospital
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=B7aAH4uAEMRQXrjjp6qBfThreMnWvV
+    networks: 
+      - hospital-network
+      
+  hospital-service:
+    container_name: "hospital-service"
+    build:
+      context: ./src/Services/Hospital
+      dockerfile: WebApi/Dockerfile
+    ports:
+      - "8082:8080"
+    depends_on:
+      - hospital-db
+      - rabbitmq 
+      - account-service 
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - simbir-health-network
+      - hospital-network
+
+  timetable-db:
+    image: postgres:latest
+    restart: always
+    volumes:
+      - timetable-db-volume:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=simbir-health-timetable
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=WRggXk6QEWnzFQqwDYRMvBb6wHwdz5
+    networks: 
+      - timetable-network
+      
+  timetable-service:
+    container_name: "timetable-service"
+    build:
+      context: ./src/Services/Timetable
+      dockerfile: WebApi/Dockerfile
+    ports:
+      - "8083:8080"
+    depends_on:
+      - timetable-db
+      - rabbitmq 
+      - account-service 
+      - hospital-service 
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - simbir-health-network
+      - timetable-network
+
+  history-db:
+    image: postgres:latest
+    restart: always
+    volumes:
+      - history-db-volume:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=simbir-health-history
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=bZMdp8pqnccFPpiVbkkhiCdEvHjLfj
+    networks: 
+      - history-network
+      
+  history-service:
+    container_name: "history-service"
+    build:
+      context: ./src/Services/History
+      dockerfile: WebApi/Dockerfile
+    ports:
+      - "8084:8080"
+    depends_on:
+      - history-db
+      - rabbitmq 
+      - account-service 
+      - hospital-service 
+      - elasticsearch 
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - simbir-health-network
+      - history-network
+
+volumes:
+  redis-volume:
+  rabbitmq-volume:
+  account-db-volume:
+  hospital-db-volume:
+  timetable-db-volume:
+  history-db-volume:
+  elasticsearch-volume: 
+
+networks:
+  simbir-health-network:
+  account-network:
+  hospital-network:
+  timetable-network:
+  history-network: 
