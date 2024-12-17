@@ -68,7 +68,7 @@ namespace Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Hospitals");
+                    b.ToTable("hospitals");
                 });
 #pragma warning restore 612, 618
         }

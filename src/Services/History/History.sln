@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csp
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "..\..\..\docker-compose.dcproj", "{EA65D8F2-DF83-40D9-A74D-91E251C8FDDE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{EB26CCC9-4D33-4DF0-9CFD-3E081C0ED0E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,6 +44,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6C6E3464-A1F6-4F44-A067-BDF701460862} = {EB26CCC9-4D33-4DF0-9CFD-3E081C0ED0E8}
+		{FEF75EE3-3EF5-417B-B65C-DEED99C19D76} = {EB26CCC9-4D33-4DF0-9CFD-3E081C0ED0E8}
+		{BBE78B98-B027-4251-83A7-EE833658872D} = {EB26CCC9-4D33-4DF0-9CFD-3E081C0ED0E8}
+		{524B1BD1-36D8-4EDA-88B0-12203EC7C997} = {EB26CCC9-4D33-4DF0-9CFD-3E081C0ED0E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {80F37DF8-2275-47B2-8E17-200EA4C405D1}

@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Models
 {
+    [Table("timetables")]
     public class Timetable
     {
         [Column("id")]

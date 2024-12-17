@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Models
 {
+    [Table("hospitals")]
     public class Hospital
     {
         [Column("id")]

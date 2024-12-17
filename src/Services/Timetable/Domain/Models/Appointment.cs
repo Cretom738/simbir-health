@@ -2,6 +2,7 @@
 
 namespace Domain.Models
 {
+    [Table("appointments")]
     public class Appointment
     {
         [Column("id")]

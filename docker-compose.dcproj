@@ -7,7 +7,7 @@
     <ProjectGuid>ea65d8f2-df83-40d9-a74d-91e251c8fdde</ProjectGuid>
     <DockerLaunchAction>None</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
-    <DockerServiceName>history-service</DockerServiceName>
+    <DockerServiceName>simbir-health-service</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.yml" />
